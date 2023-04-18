@@ -1,24 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useState, React } from "react";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <header>Please Type in a Zip Code Below:</header>
+      <Coordinates />
+    </>
+  );
+}
+
+function Coordinates() {
+  const [zip, setZip] = useState();
+  const [jsonData, setJsonData] = useState();
+
+  const API_Key = process.env.REACT_APP_api_key;
+  const url = new URL("http://api.openweathermap.org/geo/1.0/zip");
+
+  const HandleClick = () => {
+    url.searchParams.delete("zip");
+    url.searchParams.delete("appid");
+
+    url.searchParams.append("zip", zip);
+    url.searchParams.append("appid", API_Key);
+
+    alert(url);
+    fetch(url)
+      .then((result) => result.json())
+      .then((data) => setJsonData(data.results));
+  };
+
+  const change = (event) => {
+    setZip(event.target.value);
+  };
+
+  return (
+    <>
+      <input value={zip} onChange={change} />
+      <button onClick={() => HandleClick()}>Submit</button>
+      <p>Data is here: {jsonData}</p>
+    </>
   );
 }
 
