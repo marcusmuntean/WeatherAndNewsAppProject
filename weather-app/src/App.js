@@ -1,5 +1,6 @@
 import "./App.css";
 import { useState, React } from "react";
+import process from "process";
 
 function App() {
   return (
@@ -24,7 +25,7 @@ function Coordinates() {
     url.searchParams.append("zip", zip);
     url.searchParams.append("appid", API_Key);
 
-    alert(url);
+    alert(API_Key);
     fetch(url)
       .then((result) => result.json())
       .then((data) => setJsonData(data.results));
