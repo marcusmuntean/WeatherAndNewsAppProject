@@ -53,6 +53,7 @@ function Weather(props) {
   const [currentObj, setCurrentObj] = useState({});
   const [weatherObj, setWeatherObj] = useState({});
   const [hourlyArr, setHourlyArr] = useState([{}]);
+  const [dailyArr, setDailyArr] = useState([{}]);
 
   const API_Key = process.env.REACT_APP_api_key;
   const url = new URL("https://api.openweathermap.org/data/2.5/onecall");
@@ -72,8 +73,20 @@ function Weather(props) {
         setCurrentObj(data.current);
         setWeatherObj(data.current.weather[0]);
         setHourlyArr(data.hourly);
+        setDailyArr(data.daily);
       });
   };
+
+  // const RenderObj = () => {
+  //   Object.keys(hourlyArr).map((hour) =>
+  //     hour < 24 ? (
+  //       <Hourly hourObj={hourlyArr[hour]} hourNum={hour} />
+  //     ) : (
+  //       console.log()
+  //     )
+  //   );
+  //   //  alert("hello");
+  // };
 
   return (
     <>
@@ -86,15 +99,72 @@ function Weather(props) {
       <h3>Wind Speed: {currentObj.wind_speed}</h3>
 
       <h1>Next Day Hourly Forecast</h1>
-      <Hourly hourlyArr={hourlyArr} />
+      {Object.keys(hourlyArr).map((hour) =>
+        hour < 24 ? (
+          <Hourly hourObj={hourlyArr[hour]} hourNum={hour} />
+        ) : (
+          console.log()
+        )
+      )}
     </>
   );
 }
 
+/*
+
+      {Object.keys(hourlyArr).map((hour) =>
+        hour < 24 ? (
+          <Hourly hourObj={hourlyArr[hour]} hourNum={hour} />
+        ) : (
+          console.log()
+        )
+      )}
+      {Object.keys(dailyArr).map((day) =>
+        day < 7 ? (
+          <Daily dailyObj={dailyArr[day]} dayNum={day} />
+        ) : (
+          console.log()
+        )
+      )}
+
+*/
+
 function Hourly(props) {
+  if (!props.hourObj.temp) {
+    return null;
+  }
   return (
     <>
-      <p>Hourly: {props.hourlyArr[0].pressure}</p>
+      <h3>
+        Hour {parseInt(props.hourNum) + 1}: {props.hourObj.weather[0].main} -{" "}
+        {props.hourObj.weather[0].description}
+      </h3>
+      <p>
+        Temperature: {props.hourObj.temp}, Feels Like:{" "}
+        {props.hourObj.feels_like}
+      </p>
+      <p>Clouds: {props.hourObj.clouds}</p>
+      <p>Wind Speed: {props.hourObj.wind_speed}</p>
+    </>
+  );
+}
+
+function Daily(props) {
+  if (!props.dayObj.temp.max) {
+    return null;
+  }
+  return (
+    <>
+      <h3>
+        Day {parseInt(props.dayNum) + 1}: {props.dayObj.weather[0].main} -{" "}
+        {props.hourObj.weather[0].description}
+      </h3>
+      <p>
+        Temperature: Max - {props.dayObj.temp.max}, Min -{" "}
+        {props.dayObj.temp.min}
+      </p>
+      <p>Clouds: {props.dayObj.clouds}</p>
+      <p>Wind Speed: {props.dayObj.wind_speed}</p>
     </>
   );
 }
