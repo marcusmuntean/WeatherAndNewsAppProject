@@ -106,6 +106,9 @@ function Weather(props) {
           console.log()
         )
       )}
+      {Object.keys(dailyArr).map((day) =>
+        day < 7 ? <Daily dayObj={dailyArr[day]} dayNum={day} /> : console.log()
+      )}
     </>
   );
 }
@@ -150,7 +153,7 @@ function Hourly(props) {
 }
 
 function Daily(props) {
-  if (!props.dayObj.temp.max) {
+  if (!props.dayObj.clouds) {
     return null;
   }
   return (
