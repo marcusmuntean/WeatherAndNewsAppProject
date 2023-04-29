@@ -70,7 +70,7 @@ function Weather(props) {
   const API_Key = process.env.REACT_APP_api_key;
   const url = new URL("https://api.openweathermap.org/data/2.5/onecall");
 
-  const HandleClick = () => {
+  const HandleWeatherCall = () => {
     if (!props.rendered) {
       return null;
     }
@@ -97,7 +97,8 @@ function Weather(props) {
   };
 
   useEffect(() => {
-    HandleClick();
+    HandleWeatherCall();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.rendered]);
 
   return (
