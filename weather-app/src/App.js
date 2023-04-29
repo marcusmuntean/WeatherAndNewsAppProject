@@ -149,14 +149,22 @@ function Weather(props) {
 }
 
 function Hourly(props) {
+  let url;
   if (!props.hourObj.temp) {
     return null;
   }
+
+  url =
+    "https://openweathermap.org/img/wn/" +
+    props.hourObj.weather[0].icon +
+    "@2x.png";
+
   return (
     <>
       <h3>
         Hour {parseInt(props.hourNum) + 1}: {props.hourObj.weather[0].main} -{" "}
         {props.hourObj.weather[0].description}
+        <img src={url} width="50 px" height="50px" alt="Weather Icon" />
       </h3>
       <p>
         Temperature: {props.hourObj.temp}, Feels Like:{" "}
