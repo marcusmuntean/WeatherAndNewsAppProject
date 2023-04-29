@@ -133,8 +133,15 @@ function Hourly(props) {
 }
 
 function Daily(props) {
+  let url;
   if (!props.dayObj.clouds) {
     return null;
+  }
+  if (props.rendered) {
+    url =
+      "https://openweathermap.org/img/wn/" +
+      props.dayObj.weather[0].icon +
+      "@2x.png";
   }
   return (
     <>
@@ -143,6 +150,7 @@ function Daily(props) {
           <h3>
             Day {parseInt(props.dayNum) + 1}: {props.dayObj.weather[0].main} -{" "}
             {props.dayObj.weather[0].description}
+            <img src={url} width="50 px" height="50px" alt="Weather Icon" />
           </h3>
           <p>
             Temperature: Max - {props.dayObj.temp.max}, Min -{" "}
