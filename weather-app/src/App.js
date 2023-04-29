@@ -15,6 +15,7 @@ function Coordinates() {
   const [zip, setZip] = useState();
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
+  const [rendered, setRendered] = useState(0);
 
   const API_Key = process.env.REACT_APP_api_key;
   const url = new URL("http://api.openweathermap.org/geo/1.0/zip");
@@ -31,6 +32,7 @@ function Coordinates() {
       .then((data) => {
         setLatitude(data.lat);
         setLongitude(data.lon);
+        setRendered(1);
       });
   };
 
@@ -44,7 +46,7 @@ function Coordinates() {
       <button onClick={() => HandleClick()}>Submit</button>
       <p>latitude: {latitude}</p>
       <p>longitude: {longitude}</p>
-      <Weather lat={latitude} lon={longitude} />
+      <Weather lat={latitude} lon={longitude} rendered={rendered} />
     </>
   );
 }
@@ -77,17 +79,6 @@ function Weather(props) {
       });
   };
 
-  // const RenderObj = () => {
-  //   Object.keys(hourlyArr).map((hour) =>
-  //     hour < 24 ? (
-  //       <Hourly hourObj={hourlyArr[hour]} hourNum={hour} />
-  //     ) : (
-  //       console.log()
-  //     )
-  //   );
-  //   //  alert("hello");
-  // };
-
   return (
     <>
       <button onClick={() => HandleClick()}>Show Weather</button>
@@ -107,30 +98,19 @@ function Weather(props) {
         )
       )}
       {Object.keys(dailyArr).map((day) =>
-        day < 7 ? <Daily dayObj={dailyArr[day]} dayNum={day} /> : console.log()
+        day < 7 ? (
+          <Daily
+            dayObj={dailyArr[day]}
+            dayNum={day}
+            rendered={props.rendered}
+          />
+        ) : (
+          console.log()
+        )
       )}
     </>
   );
 }
-
-/*
-
-      {Object.keys(hourlyArr).map((hour) =>
-        hour < 24 ? (
-          <Hourly hourObj={hourlyArr[hour]} hourNum={hour} />
-        ) : (
-          console.log()
-        )
-      )}
-      {Object.keys(dailyArr).map((day) =>
-        day < 7 ? (
-          <Daily dailyObj={dailyArr[day]} dayNum={day} />
-        ) : (
-          console.log()
-        )
-      )}
-
-*/
 
 function Hourly(props) {
   if (!props.hourObj.temp) {
@@ -158,16 +138,22 @@ function Daily(props) {
   }
   return (
     <>
-      <h3>
-        Day {parseInt(props.dayNum) + 1}: {props.dayObj.weather[0].main} -{" "}
-        {props.hourObj.weather[0].description}
-      </h3>
-      <p>
-        Temperature: Max - {props.dayObj.temp.max}, Min -{" "}
-        {props.dayObj.temp.min}
-      </p>
-      <p>Clouds: {props.dayObj.clouds}</p>
-      <p>Wind Speed: {props.dayObj.wind_speed}</p>
+      {props.rendered ? (
+        <>
+          <h3>
+            Day {parseInt(props.dayNum) + 1}: {props.dayObj.weather[0].main} -{" "}
+            {props.dayObj.weather[0].description}
+          </h3>
+          <p>
+            Temperature: Max - {props.dayObj.temp.max}, Min -{" "}
+            {props.dayObj.temp.min}
+          </p>
+          <p>Clouds: {props.dayObj.clouds}</p>
+          <p>Wind Speed: {props.dayObj.wind_speed}</p>
+        </>
+      ) : (
+        console.log()
+      )}
     </>
   );
 }
