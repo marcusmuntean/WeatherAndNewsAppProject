@@ -1,6 +1,9 @@
 import "./App.css";
 import { useState, React } from "react";
 import process from "process";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
 function App() {
   return (
@@ -42,10 +45,16 @@ function Coordinates() {
 
   return (
     <>
-      <input value={zip} onChange={change} />
-      <button onClick={() => HandleClick()}>Submit</button>
-      <p>latitude: {latitude}</p>
-      <p>longitude: {longitude}</p>
+      <TextField
+        variant="outlined"
+        label="Zip Code"
+        value={zip}
+        onChange={change}
+      />
+      <p></p>
+      <Button variant="contained" onClick={() => HandleClick()}>
+        Submit
+      </Button>
       <Weather lat={latitude} lon={longitude} rendered={rendered} />
     </>
   );
@@ -82,14 +91,20 @@ function Weather(props) {
   return (
     <>
       <button onClick={() => HandleClick()}>Show Weather</button>
-      <h1>Current Weather: {weatherObj.main}</h1>
-      <h2>Description: {weatherObj.description}</h2>
+      <h1>
+        <u>Current Weather</u>
+      </h1>
+      <Typography variant="h5">
+        {weatherObj.main} - {weatherObj.description}
+      </Typography>
       <h3>Temperature: {currentObj.temp}</h3>
       <h3>Feels like: {currentObj.feels_like}</h3>
       <h3>Clouds: {currentObj.clouds}</h3>
       <h3>Wind Speed: {currentObj.wind_speed}</h3>
 
-      <h1>Next Day Hourly Forecast</h1>
+      <h1>
+        <u>Next Day Hourly Forecast</u>
+      </h1>
       {Object.keys(hourlyArr).map((hour) =>
         hour < 24 ? (
           <Hourly hourObj={hourlyArr[hour]} hourNum={hour} />
@@ -97,6 +112,9 @@ function Weather(props) {
           console.log()
         )
       )}
+      <h1>
+        <u>Next Week Daily Forecast</u>
+      </h1>
       {Object.keys(dailyArr).map((day) =>
         day < 7 ? (
           <Daily
