@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState, React } from "react";
+import { useState, React, useEffect } from "react";
 import process from "process";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -8,7 +8,8 @@ import Typography from "@mui/material/Typography";
 function App() {
   return (
     <>
-      <header>Please Type in a Zip Code Below:</header>
+      <Typography variant="h4">Please Type in a Zip Code Below:</Typography>
+      <p></p>
       <Coordinates />
     </>
   );
@@ -35,7 +36,7 @@ function Coordinates() {
       .then((data) => {
         setLatitude(data.lat);
         setLongitude(data.lon);
-        setRendered(1);
+        setRendered(rendered + 1);
       });
   };
 
@@ -70,6 +71,13 @@ function Weather(props) {
   const url = new URL("https://api.openweathermap.org/data/2.5/onecall");
 
   const HandleClick = () => {
+    if (!props.rendered) {
+      return null;
+    }
+
+    var currentTime = new Date().getTime();
+    while (currentTime + 50 >= new Date().getTime()) {}
+
     url.searchParams.delete("lat");
     url.searchParams.delete("lon");
     url.searchParams.delete("appid");
@@ -88,43 +96,52 @@ function Weather(props) {
       });
   };
 
+  useEffect(() => {
+    HandleClick();
+  }, [props.rendered]);
+
   return (
     <>
-      <button onClick={() => HandleClick()}>Show Weather</button>
-      <h1>
-        <u>Current Weather</u>
-      </h1>
-      <Typography variant="h5">
-        {weatherObj.main} - {weatherObj.description}
-      </Typography>
-      <h3>Temperature: {currentObj.temp}</h3>
-      <h3>Feels like: {currentObj.feels_like}</h3>
-      <h3>Clouds: {currentObj.clouds}</h3>
-      <h3>Wind Speed: {currentObj.wind_speed}</h3>
+      {props.rendered ? (
+        <>
+          <h1>
+            <u>Current Weather</u>
+          </h1>
+          <Typography variant="h5">
+            {weatherObj.main} - {weatherObj.description}
+          </Typography>
+          <h3>Temperature: {currentObj.temp}</h3>
+          <h3>Feels like: {currentObj.feels_like}</h3>
+          <h3>Clouds: {currentObj.clouds}</h3>
+          <h3>Wind Speed: {currentObj.wind_speed}</h3>
 
-      <h1>
-        <u>Next Day Hourly Forecast</u>
-      </h1>
-      {Object.keys(hourlyArr).map((hour) =>
-        hour < 24 ? (
-          <Hourly hourObj={hourlyArr[hour]} hourNum={hour} />
-        ) : (
-          console.log()
-        )
-      )}
-      <h1>
-        <u>Next Week Daily Forecast</u>
-      </h1>
-      {Object.keys(dailyArr).map((day) =>
-        day < 7 ? (
-          <Daily
-            dayObj={dailyArr[day]}
-            dayNum={day}
-            rendered={props.rendered}
-          />
-        ) : (
-          console.log()
-        )
+          <h1>
+            <u>Next Day Hourly Forecast</u>
+          </h1>
+          {Object.keys(hourlyArr).map((hour) =>
+            hour < 24 ? (
+              <Hourly hourObj={hourlyArr[hour]} hourNum={hour} />
+            ) : (
+              console.log()
+            )
+          )}
+          <h1>
+            <u>Next Week Daily Forecast</u>
+          </h1>
+          {Object.keys(dailyArr).map((day) =>
+            day < 7 ? (
+              <Daily
+                dayObj={dailyArr[day]}
+                dayNum={day}
+                rendered={props.rendered}
+              />
+            ) : (
+              console.log()
+            )
+          )}
+        </>
+      ) : (
+        console.log()
       )}
     </>
   );
