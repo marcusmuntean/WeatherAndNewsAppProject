@@ -16,6 +16,7 @@ function App() {
       </Typography>
       <p> </p>
       <Coordinates />
+      <News />
     </>
   );
 }
@@ -241,6 +242,39 @@ function Daily(props) {
       ) : (
         console.log()
       )}
+    </>
+  );
+}
+
+function News() {
+  let url = new URL("https://api.nytimes.com/svc/mostpopular/v2/viewed/1.json");
+  const API_Key = process.env.REACT_APP_api_news;
+  const [newsObj, setNewsObj] = useState([{}]);
+
+  useEffect(() => {
+    url.searchParams.delete("api-key");
+    url.searchParams.append("api-key", API_Key);
+
+    fetch(url)
+      .then((result) => result.json())
+      .then((data) => {
+        setNewsObj(data.results);
+      });
+  }, []);
+
+  return (
+    <>
+      {Object.keys(newsObj).map((num) =>
+        num < 5 ? <Article number={num} /> : console.log()
+      )}
+    </>
+  );
+}
+
+function Article(props) {
+  return (
+    <>
+      <h2>Article {parseInt(props.number) + 1}:</h2>
     </>
   );
 }
