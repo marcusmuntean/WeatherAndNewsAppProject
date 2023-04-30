@@ -88,9 +88,11 @@ function Weather(props) {
     url.searchParams.delete("lat");
     url.searchParams.delete("lon");
     url.searchParams.delete("appid");
+    url.searchParams.delete("units");
 
     url.searchParams.append("lat", props.lat);
     url.searchParams.append("lon", props.lon);
+    url.searchParams.append("units", "imperial");
     url.searchParams.append("appid", API_Key);
 
     fetch(url)
@@ -131,10 +133,10 @@ function Weather(props) {
                 alt="Weather Icon"
               />
             </Typography>
-            <h3>Temperature: {currentObj.temp}</h3>
-            <h3>Feels like: {currentObj.feels_like}</h3>
-            <h3>Clouds: {currentObj.clouds}</h3>
-            <h3>Wind Speed: {currentObj.wind_speed}</h3>
+            <h3>Temperature: {currentObj.temp} °F</h3>
+            <h3>Feels like: {currentObj.feels_like} °F</h3>
+            <h3>Cloudiness: {currentObj.clouds}%</h3>
+            <h3>Wind Speed: {currentObj.wind_speed} mph</h3>
           </Item>
 
           <h1>
@@ -200,11 +202,11 @@ function Hourly(props) {
         <img src={url} width="50 px" height="50px" alt="Weather Icon" />
       </h3>
       <p>
-        Temperature: {props.hourObj.temp}, Feels Like:{" "}
-        {props.hourObj.feels_like}
+        Temperature: {props.hourObj.temp} °F, Feels Like:{" "}
+        {props.hourObj.feels_like} °F
       </p>
-      <p>Clouds: {props.hourObj.clouds}</p>
-      <p>Wind Speed: {props.hourObj.wind_speed}</p>
+      <p>Cloudiness: {props.hourObj.clouds}%</p>
+      <p>Wind Speed: {props.hourObj.wind_speed} mph</p>
     </>
   );
 }
@@ -230,11 +232,11 @@ function Daily(props) {
             <img src={url} width="50 px" height="50px" alt="Weather Icon" />
           </h3>
           <p>
-            Temperature - Max: {props.dayObj.temp.max}, Min:{" "}
-            {props.dayObj.temp.min}
+            Temperature - Max: {props.dayObj.temp.max} °F, Min:{" "}
+            {props.dayObj.temp.min} °F
           </p>
-          <p>Clouds: {props.dayObj.clouds}</p>
-          <p>Wind Speed: {props.dayObj.wind_speed}</p>
+          <p>Cloudiness: {props.dayObj.clouds}%</p>
+          <p>Wind Speed: {props.dayObj.wind_speed} mph</p>
         </>
       ) : (
         console.log()
