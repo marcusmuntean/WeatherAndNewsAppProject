@@ -4,12 +4,17 @@ import process from "process";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
+import { styled } from "@mui/material/styles";
+import Paper from "@mui/material/Paper";
 
 function App() {
   return (
     <>
-      <Typography variant="h4">Please Type in a Zip Code Below:</Typography>
-      <p></p>
+      <Typography textAlign={"center"} variant="h4">
+        Please Type in a Zip Code Below:
+      </Typography>
+      <p> </p>
       <Coordinates />
     </>
   );
@@ -46,16 +51,18 @@ function Coordinates() {
 
   return (
     <>
-      <TextField
-        variant="outlined"
-        label="Zip Code"
-        value={zip}
-        onChange={change}
-      />
-      <p></p>
-      <Button variant="contained" onClick={() => HandleClick()}>
-        Submit
-      </Button>
+      <div className="App">
+        <TextField
+          variant="outlined"
+          label="Zip Code"
+          value={zip}
+          onChange={change}
+        />
+        <p></p>
+        <Button variant="contained" onClick={() => HandleClick()}>
+          Submit
+        </Button>
+      </div>
       <Weather lat={latitude} lon={longitude} rendered={rendered} />
     </>
   );
@@ -101,6 +108,12 @@ function Weather(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.rendered]);
 
+  let iconUrl;
+  if (props.rendered) {
+    iconUrl =
+      "https://openweathermap.org/img/wn/" + weatherObj.icon + "@2x.png";
+  }
+
   return (
     <>
       {props.rendered ? (
@@ -108,34 +121,54 @@ function Weather(props) {
           <h1>
             <u>Current Weather</u>
           </h1>
-          <Typography variant="h5">
-            {weatherObj.main} - {weatherObj.description}
-          </Typography>
-          <h3>Temperature: {currentObj.temp}</h3>
-          <h3>Feels like: {currentObj.feels_like}</h3>
-          <h3>Clouds: {currentObj.clouds}</h3>
-          <h3>Wind Speed: {currentObj.wind_speed}</h3>
+          <Item>
+            <Typography variant="h5">
+              {weatherObj.main} - {weatherObj.description}
+              <img
+                src={iconUrl}
+                width="50 px"
+                height="50px"
+                alt="Weather Icon"
+              />
+            </Typography>
+            <h3>Temperature: {currentObj.temp}</h3>
+            <h3>Feels like: {currentObj.feels_like}</h3>
+            <h3>Clouds: {currentObj.clouds}</h3>
+            <h3>Wind Speed: {currentObj.wind_speed}</h3>
+          </Item>
 
           <h1>
             <u>Next Day Hourly Forecast</u>
           </h1>
-          {Object.keys(hourlyArr).map((hour) =>
-            hour < 24 ? (
-              <Hourly hourObj={hourlyArr[hour]} hourNum={hour} />
-            ) : (
-              console.log()
-            )
-          )}
+
+          <Grid container spacing={2}>
+            {Object.keys(hourlyArr).map((hour) =>
+              hour < 24 ? (
+                <Grid m={3}>
+                  <Item>
+                    <Hourly hourObj={hourlyArr[hour]} hourNum={hour} />
+                  </Item>
+                </Grid>
+              ) : (
+                console.log()
+              )
+            )}
+          </Grid>
+
           <h1>
             <u>Next Week Daily Forecast</u>
           </h1>
           {Object.keys(dailyArr).map((day) =>
             day < 7 ? (
-              <Daily
-                dayObj={dailyArr[day]}
-                dayNum={day}
-                rendered={props.rendered}
-              />
+              <Grid m={3}>
+                <Item>
+                  <Daily
+                    dayObj={dailyArr[day]}
+                    dayNum={day}
+                    rendered={props.rendered}
+                  />
+                </Item>
+              </Grid>
             ) : (
               console.log()
             )
@@ -197,7 +230,7 @@ function Daily(props) {
             <img src={url} width="50 px" height="50px" alt="Weather Icon" />
           </h3>
           <p>
-            Temperature: Max - {props.dayObj.temp.max}, Min -{" "}
+            Temperature - Max: {props.dayObj.temp.max}, Min:{" "}
             {props.dayObj.temp.min}
           </p>
           <p>Clouds: {props.dayObj.clouds}</p>
@@ -209,5 +242,13 @@ function Daily(props) {
     </>
   );
 }
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: "center",
+  color: theme.palette.text.secondary,
+}));
 
 export default App;
