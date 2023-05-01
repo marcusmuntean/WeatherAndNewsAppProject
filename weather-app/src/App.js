@@ -7,12 +7,13 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
+import Divider from "@mui/material/Divider";
 
 function App() {
   return (
     <>
       <Typography textAlign={"center"} variant="h4">
-        Please Type in a Zip Code Below:
+        Please Type in a Zip Code Below To Display The Weather:
       </Typography>
       <p> </p>
       <Coordinates />
@@ -250,6 +251,7 @@ function News() {
   let url = new URL("https://api.nytimes.com/svc/mostpopular/v2/viewed/1.json");
   const API_Key = process.env.REACT_APP_api_news;
   const [newsObj, setNewsObj] = useState([{}]);
+  const [rendered, setRendered] = useState(false);
 
   useEffect(() => {
     url.searchParams.delete("api-key");
@@ -259,22 +261,51 @@ function News() {
       .then((result) => result.json())
       .then((data) => {
         setNewsObj(data.results);
+        setRendered(true);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
       {Object.keys(newsObj).map((num) =>
-        num < 5 ? <Article number={num} /> : console.log()
+        num < 5 ? (
+          <div className="App">
+            <Article number={num} obj={newsObj[num]} rendered={rendered} />
+            <Divider />
+          </div>
+        ) : (
+          console.log()
+        )
       )}
     </>
   );
 }
+let mediaMetadata = "media-metadata";
 
 function Article(props) {
   return (
     <>
-      <h2>Article {parseInt(props.number) + 1}:</h2>
+      <Grid>
+        <h2>{props.obj.title}</h2>
+        <p>{props.obj.abstract}</p>
+        <p>
+          <i>{props.obj.byline}</i>
+        </p>
+
+        {props.rendered ? (
+          <img alt="News" src={props.obj.media[0][mediaMetadata][2].url}></img>
+        ) : (
+          console.log()
+        )}
+
+        <p>
+          Source:{" "}
+          <a href="/" style={{ cursor: "pointer" }}>
+            {props.obj.url}
+          </a>
+        </p>
+      </Grid>
     </>
   );
 }
